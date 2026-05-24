@@ -7,7 +7,7 @@
 #
 # Asume:
 #   - El repo está clonado en /var/www/movis.bevrim.com (o donde esté este script).
-#   - Hay un server/.env válido con TMDB_API_KEY, PORT=3010 y CLIENT_ORIGIN=https://movis.bevrim.com
+#   - Existe ecosystem.config.cjs con las env vars de prod inline (TMDB_*, PORT, etc).
 #   - El dominio movis.bevrim.com ya resuelve y tiene SSL configurado con certbot.
 #   - Usuario con sudo para reload de nginx (en --full).
 
@@ -18,6 +18,7 @@ APP_NAME="movis-server"
 BACKEND_PORT=3010
 DOMAIN="movis.bevrim.com"
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ECOSYSTEM="$ROOT/ecosystem.config.cjs"
 NGINX_CONF_SRC="$ROOT/deploy/nginx.conf"
 NGINX_CONF_DST="/etc/nginx/sites-available/$DOMAIN"
 NGINX_LINK="/etc/nginx/sites-enabled/$DOMAIN"
@@ -48,7 +49,7 @@ done
 NODE_MAJOR=$(node -p "process.versions.node.split('.')[0]")
 [ "$NODE_MAJOR" -ge 18 ] || die "Node $NODE_MAJOR es muy viejo, hace falta >=18"
 
-[ -f "$ROOT/server/.env" ] || die "falta $ROOT/server/.env (TMDB_API_KEY, PORT=$BACKEND_PORT, CLIENT_ORIGIN=https://$DOMAIN)"
+[ -f "$ECOSYSTEM" ] || die "falta $ECOSYSTEM (debe definir env con TMDB_API_KEY, PORT=$BACKEND_PORT, CLIENT_ORIGIN=https://$DOMAIN)"
 
 # pm2 — instalar solo en --full
 if ! command -v pm2 >/dev/null; then
@@ -96,28 +97,19 @@ if $FULL; then
   fi
 fi
 
-# ───── pm2 ─────
-if $FULL || ! pm2 describe "$APP_NAME" >/dev/null 2>&1; then
-  log "Arrancando $APP_NAME en pm2..."
-  pm2 delete "$APP_NAME" >/dev/null 2>&1 || true
-  pm2 start "$ROOT/server/src/index.js" \
-    --name "$APP_NAME" \
-    --cwd "$ROOT/server" \
-    --time \
-    --max-memory-restart 500M \
-    --output "$ROOT/logs/server.out.log" \
-    --error  "$ROOT/logs/server.err.log"
-  pm2 save
-  if $FULL && ! systemctl list-unit-files | grep -q '^pm2-'; then
-    warn "Para que pm2 sobreviva a reinicios, ejecuta UNA vez:"
-    warn "  pm2 startup     # te imprime un comando con sudo, cópialo y ejecútalo"
-    warn "  pm2 save"
-  fi
-else
-  log "Reload de $APP_NAME (con --update-env)..."
-  pm2 reload "$APP_NAME" --update-env
-fi
+# ───── pm2 (siempre desde ecosystem) ─────
+log "Levantando $APP_NAME desde $(basename "$ECOSYSTEM")..."
+# startOrReload es idempotente: arranca si no existe, reload sin downtime si ya está.
+# --update-env fuerza a pm2 a releer el bloque env: del ecosystem.
+pm2 startOrReload "$ECOSYSTEM" --update-env
+pm2 save
 ok "backend corriendo"
+
+if $FULL && ! systemctl list-unit-files | grep -q '^pm2-'; then
+  warn "Para que pm2 sobreviva a reinicios/logout, ejecuta UNA vez:"
+  warn "  pm2 startup     # imprime un comando con sudo — copialo y ejecutalo"
+  warn "  pm2 save"
+fi
 
 # ───── Smoke tests ─────
 log "Smoke tests..."

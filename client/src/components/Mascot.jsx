@@ -19,7 +19,7 @@ export default function Mascot({ size = 240, mood = 'happy', dancing = false }) 
       className={cls}
       viewBox="0 0 320 240"
       width={size}
-      height="auto"
+      style={{ height: 'auto', display: 'block' }}
       role="img"
       aria-label="Mascotas de Movis: palomitas animadas"
     >
