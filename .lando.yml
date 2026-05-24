@@ -1,0 +1,63 @@
+name: movis
+
+proxy:
+  nginx:
+    - movis.lndo.site
+
+services:
+  nginx:
+    type: nginx
+    ssl: true
+    overrides:
+      image: nginx:1.25
+      entrypoint: ["/docker-entrypoint.sh"]
+      command: ["nginx", "-g", "daemon off;"]
+      volumes:
+        - ./nginx.lando.conf:/etc/nginx/conf.d/default.conf:ro
+      depends_on:
+        client:
+          condition: service_started
+        server:
+          condition: service_started
+
+  client:
+    type: node:20
+    command: npm run dev -- --host 0.0.0.0 --port 3000
+    build:
+      - cd /app/client && npm install && chmod -R +x node_modules/.bin
+    overrides:
+      working_dir: /app/client
+      volumes:
+        - ./client:/app/client
+        - movis_client_node_modules:/app/client/node_modules
+
+  server:
+    type: node:20
+    command: npm start
+    build:
+      - cd /app/server && npm install && chmod -R +x node_modules/.bin
+    overrides:
+      working_dir: /app/server
+      volumes:
+        - ./server:/app/server
+        - movis_server_node_modules:/app/server/node_modules
+      environment:
+        - PORT=3001
+        - CLIENT_ORIGIN=https://movis.lndo.site
+        - NODE_ENV=development
+
+tooling:
+  npm-client:
+    service: client
+    cmd: npm
+    dir: /app/client
+  npm-server:
+    service: server
+    cmd: npm
+    dir: /app/server
+  node:
+    service: server
+
+volumes:
+  movis_client_node_modules:
+  movis_server_node_modules:

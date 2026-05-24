@@ -1,0 +1,14 @@
+{
+  "name": "movis",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Movie matcher en duo/grupo. Crea sala, comparte link, recomienda peli.",
+  "scripts": {
+    "dev": "concurrently -n server,client -c green,cyan \"npm run dev --prefix server\" \"npm run dev --prefix client\"",
+    "install:all": "npm install && npm install --prefix server && npm install --prefix client",
+    "start": "npm run dev"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0"
+  }
+}
