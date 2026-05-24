@@ -10,11 +10,12 @@
 
 ## 0. TL;DR para el dev (lee esto primero)
 
-- **Fondo**: noche de cine oscura (`#150B2E` → `#1E0F3D`) con **blobs de gradiente neón** (morado→rosa→coral) animados muy lentos detrás de todo. Justificación en §1.
-- **Superficies**: cards de "vidrio" oscuro translúcido (`rgba(255,255,255,0.05)` + blur), borde `1px rgba(255,255,255,0.10)`. Cero bordes negros gruesos, cero box-shadow dura. Esto **reemplaza por completo** el neo-brutalismo actual.
+- **Fondo**: fiesta de cine de día — **gradiente vibrante claro** lavanda-luminosa con wash saturado morado→rosa→coral (`#F3E9FF` base → washes de `#8B5CF6`/`#FF3D9A`/`#FF6B5C`) y **blobs de gradiente** animados muy lentos + sparkles detrás de todo. Alegre y brillante, NO oscuro. Justificación en §1.
+- **Superficies**: cards de "vidrio" claro translúcido (`rgba(255,255,255,0.72)` + blur), borde `1px rgba(42,27,61,0.08)`, glow de color suave. Cero bordes negros gruesos, cero box-shadow dura. Esto **reemplaza por completo** el neo-brutalismo actual.
 - **Botones y chips**: TODO es pill (`border-radius: 9999px`), padding generoso, con **glow** en hover/focus en lugar de sombra dura.
 - **Tipografía**: **Fredoka** (display redonda divertida) + **Plus Jakarta Sans** (texto legible). Sustituye Lilita One + Nunito.
 - **Acento**: gradiente firma morado→rosa→coral (`--grad-primary`). Es la marca.
+- **Tinta**: morado oscuro `#2A1B3D` para cuerpo sobre fondo claro; acentos (rosa-magenta, violeta, coral) para títulos/marca.
 - **Animación**: omnipresente pero suave. Entrada de cards (fade+rise+scale), bounce de mascota, pulso-glow de CTA, baile del loader, confeti en el match. Todo respeta `prefers-reduced-motion`.
 
 ---
@@ -26,9 +27,9 @@
 - De **Lovable** tomamos la **calidez y la suavidad**: todo redondeado, nada de aristas; las fronteras se sugieren con bordes finísimos en vez de líneas duras; la profundidad se consigue con **sombras-glow difusas y grandes** (su `rgba(0,0,0,0.1) 0 4px 12px` lo convertimos en glow de color), y los grises se derivan de **una sola tinta a distintas opacidades** para una unidad tonal total. También su idea del **wash de gradiente atmosférico detrás del hero**.
 - De **Revolut** tomamos la **confianza y la disciplina**: **pill-everything** (cada botón y chip a 9999px con padding generoso y target táctil grande), **tipografía display grande con tracking negativo** que se lee de un vistazo, y la **profundidad por contraste de color** (cero sombras duras; el dark/light de las secciones hace el trabajo).
 
-**Por qué fondo oscuro "noche de cine" y no el gradiente claro lavanda actual.** "Pop juguetón glow" pide *glow*, y el glow neón solo brilla de verdad sobre un fondo oscuro: un coral o un rosa saturado sobre lavanda clara se ve apagado; sobre `#150B2E` resplandece. Una app de cine evoca la sala a oscuras, el póster iluminado, la pantalla encendida. El fondo oscuro convierte cada póster de película en el héroe luminoso de la pantalla y deja que los gradientes morado→rosa→coral funcionen como luces de neón. Mantenemos la vibra divertida (formas burbuja, mascota, colores vivos, micro-animaciones) pero la subimos de nivel pasando de "neo-brutalismo plano de día" a "fiesta de neón premium de noche". El resultado se siente como Spotify-en-fiesta cruzado con la calidez de Lovable.
+**Por qué fondo vibrante claro "fiesta de cine de día" y no el fondo oscuro.** "Pop juguetón glow" pide *alegría, brillo y energía pop*: un lienzo claro y saturado morado→rosa→coral transmite de inmediato una fiesta luminosa, optimista y juguetona — la emoción de "¡vamos a ver algo juntos!" en su versión más radiante. El glow sigue siendo la firma, pero aquí brilla como **luz de color sobre un día soleado**: halos saturados alrededor del póster, los botones y la mascota que tiñen el fondo claro de color, no como neón en la oscuridad. El póster de la película destaca como una postal vívida sobre el wash de color, y los gradientes morado→rosa→coral funcionan como confeti de luz. Mantenemos la vibra divertida (formas burbuja, mascota, colores vivos, micro-animaciones) y la subimos de nivel pasando de "neo-brutalismo plano" a "fiesta de color premium, brillante y alegre". El resultado se siente como Lovable (calidez clara) cruzado con la disciplina pill de Revolut, en clave de fiesta diurna.
 
-**Principio rector:** *suave pero vibrante*. Saturación alta en acentos y gradientes, pero geometría blanda (radios enormes), tipografía redonda y movimiento orgánico. Nada pincha; todo brilla.
+**Principio rector:** *suave pero vibrante*. Saturación alta en acentos y gradientes, pero geometría blanda (radios enormes), tipografía redonda y movimiento orgánico. Nada pincha; todo brilla — y el brillo es luz de color sobre claro.
 
 ---
 
@@ -37,106 +38,112 @@
 > Todas las variables van en `:root` en `client/src/styles/global.css`, sustituyendo el bloque `:root` actual.
 > Convención: `--c-*` color sólido, `--grad-*` gradiente, `--glow-*` sombra-glow, `--ink-*` texto.
 
-### 2.1 Base / fondo (noche de cine)
+### 2.1 Base / fondo (fiesta de cine de día — vibrante claro)
 
 ```css
 :root {
-  /* ---- FONDO NOCHE DE CINE ---- */
-  --c-bg:            #150B2E;   /* morado casi negro, base de página */
-  --c-bg-2:          #1E0F3D;   /* segundo tono para el degradado base */
-  --c-bg-3:          #0E0720;   /* el más oscuro, viñeta inferior */
+  /* ---- FONDO VIBRANTE CLARO ---- */
+  --c-bg:            #F3E9FF;   /* lavanda luminosa, base de página */
+  --c-bg-2:          #FFE6F4;   /* rosa muy claro, segundo tono del degradado base */
+  --c-bg-3:          #FFEDE6;   /* coral-melocotón claro, tercer tono cálido */
 
-  /* ---- SUPERFICIES (vidrio oscuro translúcido) ---- */
-  --c-surface:       rgba(255, 255, 255, 0.05);  /* card por defecto */
-  --c-surface-2:     rgba(255, 255, 255, 0.08);  /* card elevada / hover */
-  --c-surface-solid: #241245;                    /* fallback opaco si no hay blur */
-  --c-input-bg:      rgba(255, 255, 255, 0.06);  /* inputs y selects */
+  /* ---- SUPERFICIES (vidrio claro translúcido) ---- */
+  --c-surface:       rgba(255, 255, 255, 0.72);  /* card por defecto (blanco glassy) */
+  --c-surface-2:     rgba(255, 255, 255, 0.88);  /* card elevada / hover, más opaca */
+  --c-surface-solid: #FFFFFF;                    /* fallback opaco si no hay blur */
+  --c-input-bg:      rgba(255, 255, 255, 0.78);  /* inputs y selects */
 
-  /* ---- BORDES (finos, por opacidad) ---- */
-  --c-border:        rgba(255, 255, 255, 0.10);  /* borde pasivo de card */
-  --c-border-strong: rgba(255, 255, 255, 0.18);  /* borde interactivo / hover */
-  --c-border-faint:  rgba(255, 255, 255, 0.06);  /* divisores sutiles */
+  /* ---- BORDES (finos, por opacidad de tinta morada) ---- */
+  --c-border:        rgba(42, 27, 61, 0.08);     /* borde pasivo de card */
+  --c-border-strong: rgba(42, 27, 61, 0.16);     /* borde interactivo / hover */
+  --c-border-faint:  rgba(42, 27, 61, 0.05);     /* divisores sutiles */
 }
 ```
 
-### 2.2 Tinta / texto (derivada de blanco por opacidad — unidad tonal estilo Lovable)
+### 2.2 Tinta / texto (derivada de morado oscuro por opacidad — unidad tonal estilo Lovable)
 
 ```css
-  --ink:        #FDFBFF;                      /* texto principal (blanco cálido) */
-  --ink-90:     rgba(253, 251, 255, 0.90);   /* títulos sobre superficie */
-  --ink-70:     rgba(253, 251, 255, 0.70);   /* cuerpo */
-  --ink-55:     rgba(253, 251, 255, 0.55);   /* texto secundario / muted */
-  --ink-40:     rgba(253, 251, 255, 0.40);   /* placeholder, captions, deshabilitado */
-  --ink-on-light: #1A0B33;                   /* texto sobre superficies claras/acento dorado */
+  --ink:        #2A1B3D;                      /* texto principal (morado tinta oscuro) */
+  --ink-90:     rgba(42, 27, 61, 0.90);      /* títulos sobre superficie */
+  --ink-70:     rgba(42, 27, 61, 0.72);      /* cuerpo */
+  --ink-55:     rgba(42, 27, 61, 0.58);      /* texto secundario / muted */
+  --ink-40:     rgba(42, 27, 61, 0.42);      /* placeholder, captions, deshabilitado */
+  --ink-on-dark: #FDFBFF;                    /* texto sobre superficies de acento saturado (botones, chips de color) */
 ```
 
-> Contraste: `--ink` (#FDFBFF) sobre `--c-bg` (#150B2E) ≈ 15.8:1 (AAA). `--ink-55` sobre `--c-bg` ≈ 8:1 (AAA). Ver §11.
+> Contraste: `--ink` (#2A1B3D) sobre `--c-bg` (#F3E9FF) ≈ 13.5:1 (AAA). `--ink-55` sobre `--c-bg` ≈ 6.2:1 (AA grande/AAA pequeño según tamaño). Sobre las superficies blancas (`--c-surface`) el contraste es aún mayor. Ver §11.
 
 ### 2.3 Marca y acentos (máximo 3 acentos — regla del sistema)
 
 ```css
   /* ---- ACENTO 1: ROSA-MAGENTA (primario de marca) ---- */
   --c-primary:       #FF3D9A;   /* rosa neón, el color "Movis" */
-  --c-primary-deep:  #E01F7D;   /* presionado / activo */
-  --c-primary-soft:  #FF7AC0;   /* highlights, iconos sobre oscuro */
+  --c-primary-deep:  #D81B79;   /* presionado / activo + texto rosa accesible sobre claro */
+  --c-primary-soft:  #FF7AC0;   /* highlights, fondos rosados muy suaves */
 
   /* ---- ACENTO 2: MORADO-VIOLETA (secundario) ---- */
   --c-violet:        #8B5CF6;   /* violeta brillante */
-  --c-violet-deep:   #6D3FE0;
+  --c-violet-deep:   #6D3FE0;   /* texto violeta accesible sobre claro */
 
   /* ---- ACENTO 3: CORAL/NARANJA (terciario, calidez) ---- */
   --c-coral:         #FF6B5C;   /* coral cálido (puente con la marca vieja) */
-  --c-coral-deep:    #E84A3C;
+  --c-coral-deep:    #E84A3C;   /* texto coral accesible sobre claro */
 
   /* ---- DORADO (reservado: estrellas/rating, NO es 4º acento de UI) ---- */
-  --c-gold:          #FFC83D;   /* solo para rating y sparkles decorativos */
+  --c-gold:          #F5A623;   /* ámbar dorado, legible sobre claro; solo rating y sparkles */
+  --c-gold-soft:     #FFC83D;   /* relleno de estrella/sparkle decorativo */
 }
 ```
 
-> Los 3 acentos de UI son **rosa, violeta y coral** (la tríada del gradiente firma). El **dorado** se restringe a rating y destellos decorativos, no compite como color de acción. Esto respeta "máximo 3 acentos".
+> Los 3 acentos de UI son **rosa, violeta y coral** (la tríada del gradiente firma). El **dorado** se restringe a rating y destellos decorativos, no compite como color de acción. Esto respeta "máximo 3 acentos". Nota: para *texto* de acento sobre fondo claro se usan las variantes `-deep` (más oscuras y legibles); los `-soft` y base se reservan para rellenos, glows y fondos.
 
 ### 2.4 Estados (éxito / error / aviso)
 
 ```css
-  --c-success:      #2DD4A7;   /* verde menta (hereda la menta vieja, más vivo) */
-  --c-success-deep: #16A98A;
-  --c-error:        #FF4D6D;   /* rojo-rosa, coherente con la paleta cálida */
-  --c-error-deep:   #E0314F;
-  --c-warning:      #FFB020;
+  --c-success:      #16A98A;   /* verde menta intenso, legible sobre claro */
+  --c-success-deep: #0E8A70;
+  --c-success-soft: #2DD4A7;   /* relleno de chip/grad SÍ */
+  --c-error:        #E0314F;   /* rojo-rosa, legible como texto sobre claro */
+  --c-error-deep:   #C01E3C;
+  --c-error-soft:   #FF4D6D;   /* relleno de chip/grad NO, borde */
+  --c-warning:      #C77800;   /* ámbar legible sobre claro */
 ```
 
 ### 2.5 Gradientes con nombre (la firma visual)
 
 ```css
-  /* HERO / fondo de blobs */
-  --grad-hero:    linear-gradient(135deg, #8B5CF6 0%, #FF3D9A 50%, #FF6B5C 100%);
-  /* botón primario (mismo ADN, ángulo más plano para legibilidad del texto) */
+  /* HERO / fondo vibrante claro (base de página + blobs). Wash saturado sobre lavanda. */
+  --grad-hero:    linear-gradient(160deg, #F3E9FF 0%, #FFE6F4 50%, #FFEDE6 100%);
+  /* botón primario (mismo ADN, ángulo plano para legibilidad del texto blanco) */
   --grad-primary: linear-gradient(100deg, #C026D3 0%, #FF3D9A 55%, #FF6B5C 100%);
-  /* glow radial (se usa como background de halos detrás de mascota/póster) */
-  --grad-glow:    radial-gradient(circle at 50% 40%, rgba(255,61,154,0.55) 0%, rgba(139,92,246,0.25) 45%, transparent 70%);
+  /* glow radial (se usa como background de halos detrás de mascota/póster, saturado) */
+  --grad-glow:    radial-gradient(circle at 50% 40%, rgba(255,61,154,0.45) 0%, rgba(139,92,246,0.22) 45%, transparent 70%);
   /* chip SÍ (verde/menta) */
   --grad-yes:     linear-gradient(120deg, #2DD4A7 0%, #22B8C4 100%);
   /* chip NO (rojo cálido) */
   --grad-no:      linear-gradient(120deg, #FF4D6D 0%, #FF6B5C 100%);
-  /* texto con gradiente (brand wordmark, números grandes) */
-  --grad-text:    linear-gradient(100deg, #FF7AC0 0%, #FF3D9A 50%, #FFB020 100%);
-  /* viñeta de fondo de página (overlay sutil que oscurece bordes) */
-  --grad-vignette: radial-gradient(120% 80% at 50% 0%, transparent 40%, rgba(14,7,32,0.65) 100%);
+  /* texto con gradiente (brand wordmark, números grandes) — saturado para destacar sobre claro */
+  --grad-text:    linear-gradient(100deg, #C026D3 0%, #FF3D9A 50%, #FF6B5C 100%);
+  /* viñeta de fondo de página (overlay sutil que ilumina/aclara hacia el centro) */
+  --grad-vignette: radial-gradient(120% 80% at 50% 0%, rgba(255,255,255,0.45) 0%, transparent 55%);
 ```
+
+> Nota sobre `--grad-text` en clave clara: la versión rosa→coral pura quedaría poco legible sobre lavanda; por eso arranca en magenta saturado `#C026D3` para asegurar contraste del wordmark sobre el fondo claro.
 
 ### 2.6 Glow y sombras (reemplazan la box-shadow dura `0 6px 0`)
 
-> Lovable usa una sombra de foco difusa y grande; nosotros la coloreamos. **Nunca** sombras de offset duro tipo neo-brutalismo.
+> Lovable usa una sombra de foco difusa y grande; nosotros la coloreamos. **Nunca** sombras de offset duro tipo neo-brutalismo. Sobre fondo claro, los glows de color son ligeramente más translúcidos para no ensuciar el lienzo; la sombra de card aporta una pizca de morado en lugar de negro puro.
 
 ```css
-  --glow-primary:   0 8px 32px rgba(255, 61, 154, 0.45);   /* CTA hover/focus */
-  --glow-primary-sm:0 4px 16px rgba(255, 61, 154, 0.35);   /* CTA reposo */
-  --glow-violet:    0 8px 32px rgba(139, 92, 246, 0.45);
-  --glow-yes:       0 6px 24px rgba(45, 212, 167, 0.45);
-  --glow-no:        0 6px 24px rgba(255, 77, 109, 0.45);
-  --glow-card:      0 16px 48px rgba(0, 0, 0, 0.40);        /* profundidad de card en hover */
-  --glow-poster:    0 24px 80px rgba(255, 61, 154, 0.40);  /* halo del póster héroe */
-  --ring-focus:     0 0 0 3px rgba(255, 61, 154, 0.55);    /* focus-visible ring */
+  --glow-primary:   0 8px 32px rgba(255, 61, 154, 0.42);   /* CTA hover/focus */
+  --glow-primary-sm:0 4px 16px rgba(255, 61, 154, 0.32);   /* CTA reposo */
+  --glow-violet:    0 8px 32px rgba(139, 92, 246, 0.40);
+  --glow-yes:       0 6px 24px rgba(45, 212, 167, 0.40);
+  --glow-no:        0 6px 24px rgba(255, 77, 109, 0.40);
+  --glow-card:      0 16px 40px rgba(120, 60, 160, 0.18);   /* profundidad de card (sombra morada suave, no negra) */
+  --glow-card-rest: 0 8px 24px rgba(120, 60, 160, 0.12);    /* card en reposo, más sutil */
+  --glow-poster:    0 24px 70px rgba(255, 61, 154, 0.42);   /* halo del póster héroe */
+  --ring-focus:     0 0 0 3px rgba(255, 61, 154, 0.50);     /* focus-visible ring */
 ```
 
 ### 2.7 Radios, blur y capas
@@ -161,14 +168,14 @@ body {
   color: var(--ink);
   background:
     var(--grad-vignette),
-    linear-gradient(160deg, var(--c-bg-2) 0%, var(--c-bg) 55%, var(--c-bg-3) 100%);
+    linear-gradient(160deg, var(--c-bg) 0%, var(--c-bg-2) 52%, var(--c-bg-3) 100%);
   background-attachment: fixed;
   -webkit-font-smoothing: antialiased;
   min-height: 100%;
 }
 ```
 
-Los **blobs de gradiente animados** van en un pseudo-elemento de fondo (ver §7.7), no en el `body` directamente.
+Los **blobs de gradiente animados** (en clave clara/saturada) van en un pseudo-elemento de fondo (ver §7.7), no en el `body` directamente.
 
 ---
 
@@ -187,7 +194,7 @@ Los **blobs de gradiente animados** van en un pseudo-elemento de fondo (ver §7.
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 ```
 
-> También actualizar `<meta name="theme-color" content="#150B2E">` (línea 7).
+> También actualizar `<meta name="theme-color" content="#F3E9FF">` (línea 7).
 
 ### 3.2 Familias
 
@@ -201,11 +208,11 @@ Los **blobs de gradiente animados** van en un pseudo-elemento de fondo (ver §7.
 | Rol | Fuente | Size (clamp) | Peso | Line-height | Tracking | Notas |
 |-----|--------|--------------|------|-------------|----------|-------|
 | **Brand (wordmark MOVIS)** | Fredoka | `clamp(2.8rem, 9vw, 5rem)` | 700 | 0.95 | `-0.04em` | Relleno con `--grad-text` (ver §3.4). NO mayúsculas forzadas. |
-| **H1 / Display** | Fredoka | `clamp(2.2rem, 6vw, 3.6rem)` | 600 | 1.02 | `-0.035em` | Títulos de paso/pantalla |
-| **H2 / Sección** | Fredoka | `clamp(1.5rem, 4vw, 2.2rem)` | 600 | 1.08 | `-0.02em` | Títulos de card |
-| **H3 / Subtítulo card** | Fredoka | `clamp(1.15rem, 3vw, 1.4rem)` | 500 | 1.15 | `-0.01em` | |
+| **H1 / Display** | Fredoka | `clamp(2.2rem, 6vw, 3.6rem)` | 600 | 1.02 | `-0.035em` | Títulos de paso/pantalla, color `--ink` |
+| **H2 / Sección** | Fredoka | `clamp(1.5rem, 4vw, 2.2rem)` | 600 | 1.08 | `-0.02em` | Títulos de card, color `--ink` |
+| **H3 / Subtítulo card** | Fredoka | `clamp(1.15rem, 3vw, 1.4rem)` | 500 | 1.15 | `-0.01em` | color `--ink` |
 | **Label** | Fredoka | `0.8rem` (12.8px) | 600 | 1.2 | `0.06em` | MAYÚSCULAS (`text-transform: uppercase`), color `--ink-55` |
-| **Body** | Plus Jakarta Sans | `1rem` (16px) | 400 | 1.55 | `0` | Texto base |
+| **Body** | Plus Jakarta Sans | `1rem` (16px) | 400 | 1.55 | `0` | Texto base, color `--ink` / `--ink-70` |
 | **Body Large / Subtitle** | Plus Jakarta Sans | `clamp(1.05rem, 2.5vw, 1.2rem)` | 500 | 1.5 | `0` | Bajada del hero, color `--ink-70` |
 | **Button** | Fredoka | `1.05rem` (16.8px) | 600 | 1 | `0.01em` | NO mayúsculas; capitalización normal |
 | **Button small** | Fredoka | `0.9rem` | 600 | 1 | `0.01em` | |
@@ -216,7 +223,7 @@ Los **blobs de gradiente animados** van en un pseudo-elemento de fondo (ver §7.
 
 - **Tracking negativo a tamaño display** (regla universal de top-tier systems): de `-0.04em` (brand) a `-0.02em` (H2). El cuerpo va a `0`.
 - **Sin mayúsculas forzadas en títulos** (a diferencia del CSS actual). Solo `.label` va en uppercase con tracking positivo `0.06em`.
-- **Sin `text-shadow` de offset duro** (eliminar los `text-shadow: 0 4px 0 …` actuales). La profundidad del texto viene del gradiente y del glow del fondo.
+- **Sin `text-shadow` de offset duro** (eliminar los `text-shadow: 0 4px 0 …` actuales). La profundidad del texto viene del gradiente y del color tinta sobre el lienzo claro.
 - **Texto con relleno de gradiente** (brand y números grandes):
   ```css
   .grad-text {
@@ -250,13 +257,13 @@ Los **blobs de gradiente animados** van en un pseudo-elemento de fondo (ver §7.
 | Nivel | Token / valor | Cuándo |
 |-------|---------------|--------|
 | 0 — Plano | sin sombra | fondo de página, texto |
-| 1 — Borde | `1px solid var(--c-border)` (+ `backdrop-filter: blur(var(--blur))`) | cards en reposo. La frontera es el borde, no una sombra. |
+| 1 — Borde + sombra suave | `1px solid var(--c-border)` + `--glow-card-rest` (+ `backdrop-filter: blur(var(--blur))`) | cards en reposo. La frontera es el borde fino; una sombra morada muy suave la despega del fondo claro. |
 | 2 — Glow reposo | `--glow-primary-sm` o `--glow-card` | CTA en reposo, card destacada |
 | 3 — Glow hover | `--glow-primary` / `--glow-violet` / `--glow-yes` / `--glow-no` | hover/activo de botones y chips seleccionados |
 | 4 — Halo héroe | `--glow-poster` | póster del resultado, mascota en momentos clave |
-| Focus | `--ring-focus` (`box-shadow: 0 0 0 3px rgba(255,61,154,.55)`) | `:focus-visible` en cualquier control |
+| Focus | `--ring-focus` (`box-shadow: 0 0 0 3px rgba(255,61,154,.50)`) | `:focus-visible` en cualquier control |
 
-**Filosofía:** cero sombras de offset duro (`0 6px 0`) — se eliminan del todo. La profundidad es **glow de color difuso** (Lovable difuso + Revolut contraste de color). El glow siempre comparte el color del elemento que rodea (un chip SÍ verde tiene glow verde, etc.).
+**Filosofía:** cero sombras de offset duro (`0 6px 0`) — se eliminan del todo. La profundidad es **glow de color difuso** (Lovable difuso + Revolut contraste de color). Sobre fondo claro, las cards necesitan una sombra base suave (morada, no negra) para despegarse del lienzo; los acentos llevan glow de su propio color. El glow siempre comparte el color del elemento que rodea (un chip SÍ verde tiene glow verde, etc.).
 
 ---
 
@@ -273,17 +280,17 @@ Fuente:   Fredoka 600, 1.05rem, tracking .01em, capitalización normal
 Padding:  16px 32px   (móvil mínimo: garantiza min-height 52px)
 Min:      min-height 52px (≥44px táctil holgado)
 ```
-- **Default:** `background: var(--grad-primary); color: #fff; border: none; box-shadow: var(--glow-primary-sm);`
+- **Default:** `background: var(--grad-primary); color: var(--ink-on-dark); border: none; box-shadow: var(--glow-primary-sm);`
 - **Hover:** `transform: translateY(-2px) scale(1.02); box-shadow: var(--glow-primary);` + animación `pulse-glow` opcional en CTAs principales (§7.3).
 - **Active:** `transform: translateY(0) scale(.98); box-shadow: var(--glow-primary-sm); filter: brightness(.95);`
 - **Focus-visible:** `outline: none; box-shadow: var(--glow-primary-sm), var(--ring-focus);`
 - **Disabled:** `opacity: .45; filter: grayscale(.3); cursor: not-allowed; pointer-events: none; box-shadow: none; transform: none;`
 - **Loading:** texto sustituido por spinner (§8.7) o puntos `…`; `pointer-events: none; opacity: .85;` Mantener ancho (no saltar).
 
-### 5.2 Botón secundario (vidrio) — `.btn.secondary`
+### 5.2 Botón secundario (vidrio claro) — `.btn.secondary`
 
-- **Default:** `background: var(--c-surface-2); color: var(--ink); border: 1px solid var(--c-border-strong); backdrop-filter: blur(var(--blur)); box-shadow: none;`
-- **Hover:** `background: var(--c-surface-2); border-color: var(--c-primary-soft); box-shadow: var(--glow-violet); transform: translateY(-2px);`
+- **Default:** `background: var(--c-surface-2); color: var(--c-violet-deep); border: 1px solid var(--c-border-strong); backdrop-filter: blur(var(--blur)); box-shadow: var(--glow-card-rest);`
+- **Hover:** `background: var(--c-surface-solid); border-color: var(--c-violet); color: var(--c-violet-deep); box-shadow: var(--glow-violet); transform: translateY(-2px);`
 - **Active:** `transform: translateY(0) scale(.98);`
 - **Focus-visible:** `box-shadow: var(--ring-focus);`
 - **Disabled:** igual patrón que primario.
@@ -291,8 +298,8 @@ Min:      min-height 52px (≥44px táctil holgado)
 
 ### 5.3 Botón ghost — `.btn.ghost`
 
-- **Default:** `background: transparent; color: var(--ink-70); border: 1px solid var(--c-border); box-shadow: none;`
-- **Hover:** `color: var(--ink); border-color: var(--c-border-strong); background: var(--c-surface);`
+- **Default:** `background: transparent; color: var(--ink-70); border: 1px solid var(--c-border-strong); box-shadow: none;`
+- **Hover:** `color: var(--ink); border-color: var(--c-violet); background: var(--c-surface);`
 - **Active:** `transform: scale(.98);`
 - **Focus-visible:** `box-shadow: var(--ring-focus);`
 - Uso: "Atrás", "Ya la vi", acciones terciarias.
@@ -302,8 +309,8 @@ Min:      min-height 52px (≥44px táctil holgado)
 ```
 Forma:  círculo pill, 48×48px (mín 44)
 ```
-- **Default:** `width:48px;height:48px;border-radius:var(--r-pill); display:grid;place-items:center; background:var(--c-surface-2); border:1px solid var(--c-border); color:var(--ink);`
-- **Hover:** `background:var(--c-surface-2); box-shadow:var(--glow-violet); transform: scale(1.06);`
+- **Default:** `width:48px;height:48px;border-radius:var(--r-pill); display:grid;place-items:center; background:var(--c-surface-2); border:1px solid var(--c-border); color:var(--c-violet-deep); box-shadow: var(--glow-card-rest);`
+- **Hover:** `background:var(--c-surface-solid); box-shadow:var(--glow-violet); transform: scale(1.06);`
 - **Active:** `transform: scale(.94);`
 - Icono interior: SVG 22px, `stroke: currentColor` (ver §8).
 
@@ -314,11 +321,11 @@ Forma:  --r-md (16px)
 Fuente: Plus Jakarta Sans 500, 1rem
 Padding:14px 18px ; width:100% ; min-height 52px
 ```
-- **Default:** `background: var(--c-input-bg); border: 1px solid var(--c-border); color: var(--ink); backdrop-filter: blur(var(--blur)); outline: none;`
+- **Default:** `background: var(--c-input-bg); border: 1px solid var(--c-border-strong); color: var(--ink); backdrop-filter: blur(var(--blur)); outline: none;`
 - **Placeholder:** `color: var(--ink-40);`
-- **Hover:** `border-color: var(--c-border-strong);`
+- **Hover:** `border-color: var(--c-violet);`
 - **Focus:** `border-color: var(--c-primary); box-shadow: var(--ring-focus);`
-- **Error:** `border-color: var(--c-error); box-shadow: 0 0 0 3px rgba(255,77,109,.3);`
+- **Error:** `border-color: var(--c-error); box-shadow: 0 0 0 3px rgba(224,49,79,.25);`
 - **Disabled:** `opacity:.5; cursor:not-allowed;`
 - `select`: misma base + chevron SVG inline como `background-image` (ver §8), `appearance: none; padding-right: 42px;`.
 
@@ -328,11 +335,11 @@ Padding:14px 18px ; width:100% ; min-height 52px
 Forma:  --r-lg (24px) ; --r-xl en hero
 Padding:24px (móvil 20px)
 ```
-- **Default:** `background: var(--c-surface); border: 1px solid var(--c-border); backdrop-filter: blur(var(--blur)); box-shadow: var(--glow-card);`
+- **Default:** `background: var(--c-surface); border: 1px solid var(--c-border); backdrop-filter: blur(var(--blur)); box-shadow: var(--glow-card-rest);`
 - **Entrada:** animación `card-in` (§7.1) al montar.
-- **Hover (solo cards interactivas, p.ej. resultado):** `border-color: var(--c-border-strong); transform: translateY(-3px);`
-- No usar borde negro grueso (eliminar `border:3px solid var(--ink)`).
-- **Variante destacada `.card.glow`:** añade un halo: `box-shadow: var(--glow-card), 0 0 60px rgba(255,61,154,.18);`
+- **Hover (solo cards interactivas, p.ej. resultado):** `background: var(--c-surface-2); border-color: var(--c-border-strong); box-shadow: var(--glow-card); transform: translateY(-3px);`
+- No usar borde negro grueso (eliminar `border:3px solid var(--ink)`). No usar blanco puro opaco como fondo de card (usar `--c-surface` translúcido para que el wash de color se transparente).
+- **Variante destacada `.card.glow`:** añade un halo de color: `box-shadow: var(--glow-card), 0 0 60px rgba(255,61,154,.20);`
 
 ### 5.7 Chip de género — `.chip`
 
@@ -341,11 +348,11 @@ Forma:  pill (--r-pill)
 Fuente: Plus Jakarta Sans 700, .95rem
 Padding:12px 18px ; min-height 44px ; gap 8px (para icono)
 ```
-- **Neutro (default):** `background: var(--c-surface-2); color: var(--ink-90); border: 1px solid var(--c-border); cursor: pointer;`
-- **Hover (neutro):** `transform: translateY(-2px) scale(1.03); border-color: var(--c-border-strong); background: var(--c-surface-2);`
+- **Neutro (default):** `background: var(--c-surface-2); color: var(--ink-90); border: 1px solid var(--c-border-strong); cursor: pointer;`
+- **Hover (neutro):** `transform: translateY(-2px) scale(1.03); border-color: var(--c-violet); background: var(--c-surface-solid); box-shadow: var(--glow-card-rest);`
 - **Seleccionado SÍ (`.chip.yes`):** `background: var(--grad-yes); color:#04241C; border-color: transparent; box-shadow: var(--glow-yes);` + icono check (§8) a la izquierda; micro-animación `chip-pop` (§7.6).
-- **Seleccionado NO (`.chip.no`):** `background: var(--grad-no); color:#fff; border-color: transparent; box-shadow: var(--glow-no); text-decoration: line-through; text-decoration-thickness: 2px;` + icono x (§8).
-- **Disabled (límite 3 alcanzado):** `opacity: .35; cursor: not-allowed; transform: none; box-shadow: none; filter: grayscale(.4);`
+- **Seleccionado NO (`.chip.no`):** `background: var(--grad-no); color: var(--ink-on-dark); border-color: transparent; box-shadow: var(--glow-no); text-decoration: line-through; text-decoration-thickness: 2px;` + icono x (§8).
+- **Disabled (límite 3 alcanzado):** `opacity: .4; cursor: not-allowed; transform: none; box-shadow: none; filter: grayscale(.4);`
 - **Active (tap):** `transform: scale(.95);`
 - **Focus-visible:** `box-shadow: var(--ring-focus);`
 
@@ -356,7 +363,7 @@ Padding:12px 18px ; min-height 44px ; gap 8px (para icono)
 ```
 Forma:  pill ; Plus Jakarta Sans 700, .9rem ; padding 8px 14px 8px 8px ; gap 8px ; min-height 40px
 ```
-- **No listo (default):** `background: var(--c-surface-2); border: 1px solid var(--c-border); color: var(--ink-70);` + avatar circular de inicial a la izquierda (24px, fondo `--grad-primary`, texto `#fff` Fredoka 600) + spinner mini o "…" al final.
+- **No listo (default):** `background: var(--c-surface-2); border: 1px solid var(--c-border-strong); color: var(--ink-70);` + avatar circular de inicial a la izquierda (24px, fondo `--grad-primary`, texto `var(--ink-on-dark)` Fredoka 600) + spinner mini o "…" al final.
 - **Listo (`.pill.ready`):** `background: var(--grad-yes); color:#04241C; border-color: transparent; box-shadow: var(--glow-yes);` + icono check al final; animación `chip-pop` al pasar a ready.
 - **"(tú)":** se renderiza el sufijo en `--ink-55`, peso 500.
 
@@ -366,7 +373,7 @@ Forma:  pill ; Plus Jakarta Sans 700, .9rem ; padding 8px 14px 8px 8px ; gap 8px
 Layout: flex, gap 8px, justify center
 ```
 - Cada paso: `span { width: 44px; height: 8px; border-radius: var(--r-pill); }`
-  - **Pendiente:** `background: var(--c-border);`
+  - **Pendiente:** `background: var(--c-border-strong);`
   - **Actual (`.on`):** `background: var(--grad-primary); box-shadow: var(--glow-primary-sm);` + animación `pulse-glow` lenta.
   - **Hecho (`.done`):** `background: var(--c-success);`
 - Mejora: encima del stepper, mostrar `Paso X de 4 · <nombre del paso>` en `.label`. Transición entre pasos con `step-out`/`step-in` (§7.1).
@@ -376,11 +383,11 @@ Layout: flex, gap 8px, justify center
 ```
 Forma:  pill (--r-pill) contenedor ; padding 6px 6px 6px 18px
 ```
-- **Contenedor:** `display:flex; align-items:center; gap:8px; background: var(--c-input-bg); border: 1px solid var(--c-border); backdrop-filter: blur(var(--blur));`
+- **Contenedor:** `display:flex; align-items:center; gap:8px; background: var(--c-input-bg); border: 1px solid var(--c-border-strong); backdrop-filter: blur(var(--blur)); box-shadow: var(--glow-card-rest);`
 - **Input interno:** `border:none; background:transparent; color:var(--ink-70); font-family: var(--font-body); font-weight:600;` (truncar con `text-overflow: ellipsis; overflow:hidden;`).
 - **Botón copiar:** botón primario pequeño (pill) con icono "copiar" + texto.
   - **Default:** "Copiar".
-  - **Copiado (feedback):** cambia a "¡Copiado!" con icono check, `background: var(--grad-yes); box-shadow: var(--glow-yes);` durante 1.5s + dispara toast. Micro-animación `chip-pop`.
+  - **Copiado (feedback):** cambia a "¡Copiado!" con icono check, `background: var(--grad-yes); color:#04241C; box-shadow: var(--glow-yes);` durante 1.5s + dispara toast. Micro-animación `chip-pop`.
 
 ### 5.11 Search-list (favoritas) — `.search-list`
 
@@ -399,8 +406,8 @@ Lista: flex column, gap 8px, max-height 320px, overflow-y auto, scroll suave
 ```
 Forma:  pill ; padding 6px 8px 6px 14px ; gap 8px ; Plus Jakarta 700 .9rem
 ```
-- **Default:** `background: var(--grad-primary); color:#fff; box-shadow: var(--glow-primary-sm);` (sin borde).
-- **Botón quitar `.x`:** círculo 20px, `background: rgba(255,255,255,.25); color:#fff; border-radius:50%; display:grid;place-items:center;` icono x 12px; hover `background: rgba(255,255,255,.4)`. Target táctil real ≥24px (usar padding invisible).
+- **Default:** `background: var(--grad-primary); color: var(--ink-on-dark); box-shadow: var(--glow-primary-sm);` (sin borde).
+- **Botón quitar `.x`:** círculo 20px, `background: rgba(255,255,255,.28); color: var(--ink-on-dark); border-radius:50%; display:grid;place-items:center;` icono x 12px; hover `background: rgba(255,255,255,.45)`. Target táctil real ≥24px (usar padding invisible).
 - **Entrada:** `chip-pop` al añadir; salida `chip-out` al quitar.
 
 ### 5.13 Rating badge — `.rating`
@@ -408,16 +415,16 @@ Forma:  pill ; padding 6px 8px 6px 14px ; gap 8px ; Plus Jakarta 700 .9rem
 ```
 Forma:  pill ; padding 6px 14px ; gap 6px ; Fredoka 700 1rem
 ```
-- **Default:** `background: rgba(255,200,61,.14); border: 1px solid rgba(255,200,61,.4); color: var(--c-gold);` + icono estrella (fill `--c-gold`) a la izquierda.
+- **Default:** `background: rgba(245,166,35,.16); border: 1px solid rgba(245,166,35,.45); color: var(--c-warning);` + icono estrella (fill `--c-gold-soft`) a la izquierda.
 - Voto count: `<small>` en `--ink-55`, peso 500.
-- Es el **único** uso del dorado en superficie de UI.
+- Es el **único** uso del dorado en superficie de UI. El número de rating usa el ámbar oscuro `--c-warning` (`#C77800`) para ser legible sobre el chip claro; la estrella sí va en dorado vivo.
 
 ### 5.14 Error-banner — `.error-banner`
 
 ```
 Forma:  --r-md ; padding 14px 18px ; Plus Jakarta 700 ; gap 10px
 ```
-- **Default:** `background: rgba(255,77,109,.12); border: 1px solid rgba(255,77,109,.45); color: var(--c-error);` + icono alerta a la izquierda.
+- **Default:** `background: rgba(224,49,79,.10); border: 1px solid rgba(224,49,79,.45); color: var(--c-error-deep);` + icono alerta a la izquierda.
 - **Entrada:** `shake` corto (§7) + `card-in`.
 
 ### 5.15 Toast — `.toast`
@@ -426,7 +433,7 @@ Forma:  --r-md ; padding 14px 18px ; Plus Jakarta 700 ; gap 10px
 Forma:  pill ; padding 14px 22px ; Plus Jakarta 700 ; gap 10px
 Posición: fixed; bottom: 24px; left:50%; translateX(-50%); z-index: var(--z-toast)
 ```
-- **Default:** `background: rgba(36,18,69,.92); border: 1px solid var(--c-border-strong); color: var(--ink); backdrop-filter: blur(var(--blur)); box-shadow: var(--glow-card);` + icono contextual (check para "copiado", info para avisos).
+- **Default:** `background: rgba(255,255,255,.92); border: 1px solid var(--c-border-strong); color: var(--ink); backdrop-filter: blur(var(--blur)); box-shadow: var(--glow-card);` + icono contextual (check para "copiado", info para avisos).
 - **Entrada/salida:** `toast-in` (slide-up + fade) / `toast-out`. TTL 2500ms (ya implementado en `Toast.jsx`).
 - **Variantes:** `.toast.success` borde/icono verde `--c-success`; `.toast.error` rojo `--c-error`.
 
@@ -434,12 +441,12 @@ Posición: fixed; bottom: 24px; left:50%; translateX(-50%); z-index: var(--z-toa
 
 ## 6. Vistas / flujos
 
-Estructura común (`.app` / `.shell`): contenedor centrado, `max-width: 560px` para flujos de formulario, `max-width: 820px` para el resultado (póster + meta). Padding lateral 20px móvil, 24px desktop. Header simple: solo el `Brand` centrado arriba (no hay nav). Fondo de blobs §7.7 detrás de todo.
+Estructura común (`.app` / `.shell`): contenedor centrado, `max-width: 560px` para flujos de formulario, `max-width: 820px` para el resultado (póster + meta). Padding lateral 20px móvil, 24px desktop. Header simple: solo el `Brand` centrado arriba (no hay nav). Fondo de blobs claros §7.7 detrás de todo.
 
 ### 6.1 Landing
 
 - **Hero:** `Brand` (wordmark con `--grad-text`) → `.scene` con la **mascota animada** (palomitas, §8.9) sobre un halo `--grad-glow` que respira (`breathe`, §7) → subtítulo en `--ink-70`.
-- **`.scene`:** card hero `--r-xl`, fondo `--c-surface`, con el halo radial detrás de la mascota. La mascota hace `bounce` suave en loop.
+- **`.scene`:** card hero `--r-xl`, fondo `--c-surface` (vidrio claro), con el halo radial de color detrás de la mascota. La mascota hace `bounce` suave en loop.
 - **Card de formulario:** input de nombre + grupo "¿Cuántos sois?" (Yo solo / En pareja / En grupo) como **3 chips/segmented pills** (no botones rectangulares); el seleccionado usa `--grad-primary` + glow. CTA "¡Movis!" primario con `pulse-glow`.
 - **Micro-UX:** al pulsar "¡Movis!" → estado loading en el botón (spinner) → transición a la sala. Si error, `error-banner` con `shake`.
 
@@ -459,15 +466,15 @@ Estructura común (`.app` / `.shell`): contenedor centrado, `max-width: 560px` p
 - `Brand` + `.scene` con la **mascota bailando** (`bounce` más enérgico, palomitas saltando) sobre halo `--grad-glow` que pulsa.
 - **Frase rotatoria** (ya existe el array) en H2 con `--grad-text`, cambia cada 1.8s con un `fade` cruzado.
 - **Baile `.dance`:** sustituir los cuadrados con borde negro por **palomitas/puntos** redondos que rebotan; cada uno con un color de la tríada (rosa, violeta, coral, menta) y glow propio. `bounce` con delays escalonados (ya existe el patrón; actualizar colores y quitar bordes).
-- **Barra de progreso de participantes:** además del texto "X de Y listos", añadir una **barra pill** que se llena (`width: ready/total %`) con `--grad-yes` y transición suave; debajo, las `pill` de participantes (ready/no-ready, §5.8).
+- **Barra de progreso de participantes:** además del texto "X de Y listos", añadir una **barra pill** con pista `--c-surface-2` (borde `--c-border`) que se llena (`width: ready/total %`) con `--grad-yes` y transición suave; debajo, las `pill` de participantes (ready/no-ready, §5.8).
 - **Micro-UX:** cuando todos están listos, breve flash de glow en la barra antes de pasar a Result.
 
 ### 6.4 Result (la celebración)
 
 - `Brand` pequeño arriba → H2 "¡Os toca ver!" con `--grad-text`.
 - **Layout:** grid `minmax(0, 260px) 1fr` (póster | meta); colapsa a 1 columna centrada < 640px.
-- **Póster héroe:** `--r-xl`, con **halo `--glow-poster`** detrás (el póster brilla como la pantalla de cine). Entrada con `poster-reveal` (scale 0.9→1 + fade + glow que crece). 
-- **Meta:** título Fredoka 600 + año en `--ink-55`; `rating` badge dorado; sinopsis en `--ink-70`; botones "Otra recomendación" (secundario) + "Ya la vi" (ghost); link "Más info en TMDB →" en `--ink-55`.
+- **Póster héroe:** `--r-xl`, con **halo `--glow-poster`** detrás (el póster brilla con luz de color sobre el lienzo claro, como un foco). Entrada con `poster-reveal` (scale 0.9→1 + fade + glow que crece).
+- **Meta:** título Fredoka 600 `--ink` + año en `--ink-55`; `rating` badge dorado; sinopsis en `--ink-70`; botones "Otra recomendación" (secundario) + "Ya la vi" (ghost); link "Más info en TMDB →" en `--c-violet-deep`.
 - **CONFETI:** al aparecer una recomendación (match), lanzar confeti desde el centro-arriba con colores de la tríada + dorado (§7.5, §8). Es el momento de máxima celebración.
 - **Estado sin match:** card centrada con icono "lupa triste"/mascota encogida, texto "Sin más coincidencias con vuestros filtros. Probad relajando alguno." + botón "Otra vuelta". Sin confeti.
 - **Botones "otra"/"ya la vi":** al pulsar, transición de salida del póster (`poster-out`: fade + scale-down) y vuelta a Waiting con la mascota buscando.
@@ -478,7 +485,7 @@ Estructura común (`.app` / `.shell`): contenedor centrado, `max-width: 560px` p
 2. Animación `chip-pop` al marcar cualquier chip/fav/participante-ready.
 3. Confeti en match (Result) y mini-confeti al completar 3/3 (Wizard).
 4. Botón primario con `pulse-glow` cuando es la acción esperada (invita a pulsar).
-5. Halo que respira detrás de la mascota y del póster (vida sin ruido).
+5. Halo de color que respira detrás de la mascota y del póster (vida sin ruido).
 6. Barra de progreso de participantes en Waiting (sensación de "casi listos").
 7. `shake` en error-banner para llamar la atención sin ser agresivo.
 
@@ -575,16 +582,17 @@ Estructura común (`.app` / `.shell`): contenedor centrado, `max-width: 560px` p
 .chip.yes, .chip.no, .pill.ready, .fav { animation: chip-pop .3s var(--ease-bounce); }
 ```
 
-### 7.7 Gradiente de fondo animado (blobs)
+### 7.7 Gradiente de fondo animado (blobs claros + sparkles)
 
 ```css
-/* Pseudo-elemento de fondo a pantalla completa, detrás del contenido */
+/* Pseudo-elemento de fondo a pantalla completa, detrás del contenido.
+   Blobs saturados PERO suaves sobre el lienzo claro: tiñen sin oscurecer. */
 .app::before {
   content: ""; position: fixed; inset: -20%; z-index: var(--z-bg); pointer-events: none;
   background:
-    radial-gradient(40% 40% at 20% 25%, rgba(139,92,246,.45), transparent 60%),
-    radial-gradient(45% 45% at 80% 20%, rgba(255,61,154,.40), transparent 60%),
-    radial-gradient(40% 40% at 60% 85%, rgba(255,107,92,.38), transparent 60%);
+    radial-gradient(40% 40% at 20% 25%, rgba(139,92,246,.35), transparent 60%),
+    radial-gradient(45% 45% at 80% 20%, rgba(255,61,154,.30), transparent 60%),
+    radial-gradient(40% 40% at 60% 85%, rgba(255,107,92,.28), transparent 60%);
   filter: blur(40px);
   animation: blob-drift 22s var(--ease-smooth) infinite alternate;
 }
@@ -598,6 +606,11 @@ Halo que respira detrás de mascota/póster:
 ```css
 @keyframes breathe { 0%,100%{ opacity:.7; transform:scale(1);} 50%{ opacity:1; transform:scale(1.06);} }
 .glow-halo { background: var(--grad-glow); filter: blur(8px); animation: breathe 4s var(--ease-smooth) infinite; }
+```
+Sparkles decorativos del fondo (capa opcional sobre `.app::after`, muy sutil):
+```css
+/* puntos/destellos blancos y dorados muy tenues que titilan, dispersos por el lienzo;
+   reutiliza el keyframe twinkle de §8.4. Refuerzan la sensación de "fiesta brillante". */
 ```
 
 ### 7.8 Otros
@@ -644,7 +657,7 @@ Halo que respira detrás de mascota/póster:
 |--------|--------|-----|
 | `play` | fill currentColor (triángulo) | acentos, favicon, CTA cine |
 | `popcorn` | stroke + detalles fill | mascota mini, loader, vacío |
-| `star` | **fill** `--c-gold` | rating badge |
+| `star` | **fill** `--c-gold-soft` | rating badge |
 | `check` | stroke | chip SÍ, copiado, ready |
 | `x` | stroke | chip NO, quitar fav, cerrar |
 | `copy` | stroke | botón copiar |
@@ -675,24 +688,26 @@ Halo que respira detrás de mascota/póster:
 
 ```css
 select {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%23FDFBFF' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%232A1B3D' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
   background-repeat: no-repeat; background-position: right 16px center;
 }
 ```
+
+> El chevron usa la tinta morada `#2A1B3D` (no blanco) para ser visible sobre el input claro.
 
 ### 8.4 Mejoras a la mascota de palomitas (`Mascot.jsx`)
 
 La mascota actual (dos cubos de palomitas con cara, en un sofá, con bordes negros gruesos) es buena de concepto pero "neo-brutalista". Mejorarla así:
 
-1. **Quitar los strokes negros gruesos de 3px** → usar borde fino `1.5px` en `--ink-on-light` solo donde aporte definición, o suprimir bordes y definir por color.
-2. **Recolorear** a la nueva paleta: cubo izquierdo `--c-primary` (rosa), cubo derecho `--c-violet`; rayas en `#FDFBFF`; palomitas blanco cálido `#FDFBFF`; pintitas de mantequilla en `--c-gold`. Sofá en tonos morados oscuros (`#2A1559`, `#3A1F73`).
+1. **Quitar los strokes negros gruesos de 3px** → usar borde fino `1.5px` en `--ink` (morado) solo donde aporte definición, o suprimir bordes y definir por color. (Una línea fina morada ahora *sí* aporta definición sobre el lienzo claro y las palomitas blancas.)
+2. **Recolorear** a la nueva paleta: cubo izquierdo `--c-primary` (rosa), cubo derecho `--c-violet`; rayas en `#FDFBFF`; palomitas blanco cálido `#FFF7EF` con borde fino morado para que recorten sobre el cubo claro; pintitas de mantequilla en `--c-gold-soft`. Sofá en tonos morados medios/lavanda (`#C9B6F0`, `#A98BE6`) — claros, no oscuros, para integrarse con el lienzo.
 3. **Más expresividad / animabilidad:** separar en grupos con `class` para animar por CSS:
    - `.mascot-eye` (parpadeo: animación `blink` cada 4–6s, `scaleY` a 0.1 brevemente).
    - `.mascot-bucket-left` / `.mascot-bucket-right` con `transform-origin` en la base para `bounce` desfasado.
    - `.mascot-kernel` (palomitas sueltas que pueden saltar en el loader).
-4. **Añadir un halo** detrás (`--grad-glow`) mediante un `<circle>` con `fill` del gradiente o un div `.glow-halo` posicionado detrás del SVG.
+4. **Añadir un halo** detrás (`--grad-glow`) mediante un `<circle>` con `fill` del gradiente o un div `.glow-halo` posicionado detrás del SVG (la luz de color tiñe el lienzo claro alrededor de la mascota).
 5. **Variantes de cara por estado** (prop): `happy` (Landing), `excited` (Result/match), `searching` (Waiting, ojos mirando a los lados con animación), `sad` (sin match, boca invertida). Mantener la API `<Mascot size={...} mood="happy" />`.
-6. **Sparkles**: 2–3 `sparkle` pequeños alrededor que titilan (`twinkle`: opacity 0→1→0 con delays).
+6. **Sparkles**: 2–3 `sparkle` pequeños alrededor que titilan (`twinkle`: opacity 0→1→0 con delays); en dorado/rosa para que destaquen sobre el fondo claro.
 
 ```css
 @keyframes blink   { 0%,92%,100%{transform:scaleY(1)} 96%{transform:scaleY(.1)} }
@@ -708,16 +723,19 @@ La mascota actual (dos cubos de palomitas con cara, en un sofá, con bordes negr
 
 ### 8.6 Assets decorativos
 
-- **Blobs de gradiente** (§7.7): puro CSS, sin imágenes.
-- **Grano sutil** (opcional, premium): overlay con `background-image` de ruido SVG a baja opacidad (`opacity:.03; mix-blend-mode: overlay;`) sobre `.app::after`, `pointer-events:none`. Da textura "film grain" muy ligera. No imprescindible.
-- **Sparkles**: icono `sparkle` reutilizado en confeti y alrededor de la mascota.
+- **Blobs de gradiente** (§7.7): puro CSS, sin imágenes. En clave clara/saturada (tiñen el lienzo, no lo oscurecen).
+- **Grano sutil** (opcional, premium): overlay con `background-image` de ruido SVG a baja opacidad (`opacity:.025; mix-blend-mode: multiply;`) sobre `.app::after`, `pointer-events:none`. Da textura "film grain" muy ligera. Nota: sobre fondo claro usar `multiply` (no `overlay`) para que el grano se perciba. No imprescindible.
+- **Sparkles**: icono `sparkle` reutilizado en confeti y alrededor de la mascota; tonos dorado/rosa para destacar sobre claro.
 
 ### 8.7 Spinner (loading de botones)
 
 ```css
+/* spinner sobre botón primario (fondo de color saturado) → bordes blancos */
 .spinner { width:18px;height:18px;border-radius:50%;
-  border:2px solid rgba(255,255,255,.35); border-top-color:#fff;
+  border:2px solid rgba(255,255,255,.45); border-top-color:#fff;
   animation: spin .7s linear infinite; }
+/* spinner sobre superficie clara (pills/inputs) → usar tinta morada */
+.spinner.on-light { border-color: rgba(42,27,61,.25); border-top-color: var(--c-primary); }
 ```
 
 ### 8.8 Favicon
@@ -770,22 +788,24 @@ Por defecto **CSS puro** (generar N spans absolutos con estilos inline aleatorio
 
 ### Do
 - **Pill-everything** en lo accionable: botones, chips, pills, rating, toast, share-box → `--r-pill`. Cards muy redondeadas (`--r-lg`/`--r-xl`).
-- Usar **glow de color** (difuso, grande) para profundidad y foco; el glow comparte el color del elemento.
-- Mantener el fondo **noche de cine** con blobs animados muy lentos detrás; el contenido siempre sobre cards de vidrio.
+- Usar **glow de color** (difuso, grande) para profundidad y foco; el glow comparte el color del elemento. Sobre el fondo claro el glow se lee como **luz de color** que tiñe el lienzo.
+- Mantener el fondo **vibrante claro "fiesta de cine de día"** (lavanda→rosa→coral) con blobs animados muy lentos y sparkles detrás; el contenido siempre sobre cards de vidrio claro translúcido.
 - Usar los **3 acentos** (rosa, violeta, coral) y sus gradientes con nombre. Dorado **solo** para rating/sparkles.
+- Para *texto* de acento sobre claro, usar las variantes `-deep` (más oscuras y legibles); reservar base/`-soft` para rellenos, glows y fondos.
 - Tracking **negativo** en display (-0.04 a -0.02em); cuerpo a 0; labels en mayúsculas con tracking positivo.
 - Animar generosamente pero suave (overshoot juguetón con `--ease-bounce`), y siempre respetando `prefers-reduced-motion`.
 - Celebrar el match (confeti) y dar feedback de cada acción (chip-pop, "¡Copiado!", barra de progreso).
-- Mascota expresiva con variantes de mood y halo que respira.
+- Mascota expresiva con variantes de mood y halo de color que respira.
 
 ### Don't
 - **No** bordes negros gruesos de 3px ni `box-shadow` de offset duro (`0 6px 0`) — era el lenguaje viejo; queda **prohibido**.
 - **No** Lilita One / mayúsculas forzadas en todos los títulos ni triple `text-shadow` de offset.
-- **No** fondo lavanda claro plano; el glow necesita oscuridad. **No** fondo blanco puro en cards.
+- **No** fondo oscuro "noche de cine"; el lienzo es claro y vibrante (lavanda→rosa→coral). **No** lavanda plana sin wash de gradiente. **No** cards de blanco puro opaco (usar vidrio claro translúcido para que el wash se transparente).
+- **No** texto blanco/claro sobre el lienzo claro (la tinta es morada `#2A1B3D`); el blanco solo va sobre superficies de acento saturado (botones, chips de color).
+- **No** glow gris/negro: el glow siempre es de color de marca o del estado (sobre claro, una sombra de card lleva una pizca de morado, nunca negro puro).
 - **No** introducir un 4º acento ni saturar de dorado la UI (solo rating/sparkles).
 - **No** radios pequeños (< 10px) salvo thumbnails diminutos; nada de esquinas vivas.
 - **No** animaciones bruscas ni rebotes excesivos en elementos de lectura (texto/sinopsis no rebota).
-- **No** glow gris/negro: el glow siempre es de color de marca o del estado.
 - **No** mezclar el `box-shadow` de Lovable (negro) tal cual: aquí se colorea siempre.
 
 ---
@@ -794,15 +814,16 @@ Por defecto **CSS puro** (generar N spans absolutos con estilos inline aleatorio
 
 ### 11.1 Contraste (objetivo WCAG AA, AAA donde se pueda)
 
-- Texto principal `--ink` (#FDFBFF) sobre `--c-bg` (#150B2E): ≈ 15.8:1 → **AAA**.
-- `--ink-70` sobre fondo: ≈ 11:1 → AAA. `--ink-55` sobre fondo: ≈ 8:1 → AAA. **No usar `--ink-40` para texto legible importante** (solo placeholders/captions decorativos).
-- Texto blanco sobre `--grad-primary` (rosa→coral): el punto más claro (coral #FF6B5C) con blanco ≈ 2.7:1 → **insuficiente**. Por eso el texto de botones primarios es **blanco con peso 600** sobre el centro/inicio del gradiente (rosa magenta #C026D3/#FF3D9A, contraste ≈ 4.6:1 AA); además el glow no afecta legibilidad. Verificar que el texto no quede sobre la zona coral pura: el ángulo `100deg` mantiene el texto sobre la mitad rosa.
+- Texto principal `--ink` (#2A1B3D) sobre `--c-bg` (#F3E9FF): ≈ 13.5:1 → **AAA**. Sobre cards `--c-surface` (blanco glassy) el contraste es aún mayor.
+- `--ink-70` sobre fondo: ≈ 9.5:1 → AAA. `--ink-55` sobre fondo: ≈ 6.2:1 → AA (texto normal) / AAA (texto grande). **No usar `--ink-40` para texto legible importante** (solo placeholders/captions decorativos).
+- Texto **de acento** (links, énfasis) sobre el lienzo/superficie clara: usar las variantes `-deep` — `--c-primary-deep` (#D81B79) ≈ 5.0:1, `--c-violet-deep` (#6D3FE0) ≈ 5.6:1, `--c-coral-deep` (#E84A3C) ≈ 4.6:1 → **AA**. **Nunca** usar `--c-primary`/`--c-coral` base como texto fino sobre claro (quedan por debajo de 3:1).
+- Texto blanco (`--ink-on-dark`) sobre `--grad-primary` (magenta→rosa→coral): el punto más claro (coral #FF6B5C) con blanco ≈ 2.7:1 → **insuficiente**. Por eso el botón usa blanco peso 600 y el ángulo `100deg` mantiene el texto sobre la mitad rosa-magenta (#C026D3/#FF3D9A, contraste ≈ 4.6:1 AA); el glow no afecta a la legibilidad. Verificar que el texto no quede sobre la zona coral pura.
 - Chip SÍ (verde menta) usa texto **oscuro** `#04241C` (contraste alto sobre verde claro). Chip NO (rojo) usa **blanco** (contraste suficiente sobre rojo saturado).
-- Rating: dorado `--c-gold` sobre fondo translúcido dorado oscuro — verificar ≥ 4.5:1; si no, subir opacidad del texto o usar `#FFD56B`.
+- Rating: el número usa ámbar oscuro `--c-warning` (#C77800) sobre el chip dorado translúcido claro → ≈ 4.5:1 AA; la estrella sí va en dorado vivo `--c-gold-soft` (decorativa, acompañada del número). Verificar ≥ 4.5:1 del número.
 
 ### 11.2 Foco visible
 
-- **Siempre** `:focus-visible` con anillo: `box-shadow: var(--ring-focus)` (3px, rosa 55%) — nunca `outline: none` sin sustituto. En cards interactivas y links, mismo anillo.
+- **Siempre** `:focus-visible` con anillo: `box-shadow: var(--ring-focus)` (3px, rosa 50%) — nunca `outline: none` sin sustituto. En cards interactivas y links, mismo anillo.
 - El anillo de foco es **adicional** al glow de hover (se combinan en el `box-shadow`).
 - No depender del color para estado: chips SÍ/NO llevan **icono** (check/x) y el NO va **tachado**, no solo color.
 
@@ -837,35 +858,38 @@ Por defecto **CSS puro** (generar N spans absolutos con estilos inline aleatorio
 
 ```css
 :root {
-  /* fondo */
-  --c-bg:#150B2E; --c-bg-2:#1E0F3D; --c-bg-3:#0E0720;
-  /* superficies */
-  --c-surface:rgba(255,255,255,.05); --c-surface-2:rgba(255,255,255,.08);
-  --c-surface-solid:#241245; --c-input-bg:rgba(255,255,255,.06);
-  /* bordes */
-  --c-border:rgba(255,255,255,.10); --c-border-strong:rgba(255,255,255,.18); --c-border-faint:rgba(255,255,255,.06);
+  /* fondo (vibrante claro — fiesta de cine de día) */
+  --c-bg:#F3E9FF; --c-bg-2:#FFE6F4; --c-bg-3:#FFEDE6;
+  /* superficies (vidrio claro translúcido) */
+  --c-surface:rgba(255,255,255,.72); --c-surface-2:rgba(255,255,255,.88);
+  --c-surface-solid:#FFFFFF; --c-input-bg:rgba(255,255,255,.78);
+  /* bordes (tinta morada por opacidad) */
+  --c-border:rgba(42,27,61,.08); --c-border-strong:rgba(42,27,61,.16); --c-border-faint:rgba(42,27,61,.05);
   /* tinta */
-  --ink:#FDFBFF; --ink-90:rgba(253,251,255,.90); --ink-70:rgba(253,251,255,.70);
-  --ink-55:rgba(253,251,255,.55); --ink-40:rgba(253,251,255,.40); --ink-on-light:#1A0B33;
-  /* acentos */
-  --c-primary:#FF3D9A; --c-primary-deep:#E01F7D; --c-primary-soft:#FF7AC0;
+  --ink:#2A1B3D; --ink-90:rgba(42,27,61,.90); --ink-70:rgba(42,27,61,.72);
+  --ink-55:rgba(42,27,61,.58); --ink-40:rgba(42,27,61,.42); --ink-on-dark:#FDFBFF;
+  /* acentos (base / -deep para texto sobre claro / -soft para fondos) */
+  --c-primary:#FF3D9A; --c-primary-deep:#D81B79; --c-primary-soft:#FF7AC0;
   --c-violet:#8B5CF6; --c-violet-deep:#6D3FE0;
-  --c-coral:#FF6B5C; --c-coral-deep:#E84A3C; --c-gold:#FFC83D;
+  --c-coral:#FF6B5C; --c-coral-deep:#E84A3C;
+  --c-gold:#F5A623; --c-gold-soft:#FFC83D;
   /* estados */
-  --c-success:#2DD4A7; --c-success-deep:#16A98A; --c-error:#FF4D6D; --c-error-deep:#E0314F; --c-warning:#FFB020;
+  --c-success:#16A98A; --c-success-deep:#0E8A70; --c-success-soft:#2DD4A7;
+  --c-error:#E0314F; --c-error-deep:#C01E3C; --c-error-soft:#FF4D6D; --c-warning:#C77800;
   /* gradientes */
-  --grad-hero:linear-gradient(135deg,#8B5CF6 0%,#FF3D9A 50%,#FF6B5C 100%);
+  --grad-hero:linear-gradient(160deg,#F3E9FF 0%,#FFE6F4 50%,#FFEDE6 100%);
   --grad-primary:linear-gradient(100deg,#C026D3 0%,#FF3D9A 55%,#FF6B5C 100%);
-  --grad-glow:radial-gradient(circle at 50% 40%,rgba(255,61,154,.55) 0%,rgba(139,92,246,.25) 45%,transparent 70%);
+  --grad-glow:radial-gradient(circle at 50% 40%,rgba(255,61,154,.45) 0%,rgba(139,92,246,.22) 45%,transparent 70%);
   --grad-yes:linear-gradient(120deg,#2DD4A7 0%,#22B8C4 100%);
   --grad-no:linear-gradient(120deg,#FF4D6D 0%,#FF6B5C 100%);
-  --grad-text:linear-gradient(100deg,#FF7AC0 0%,#FF3D9A 50%,#FFB020 100%);
-  --grad-vignette:radial-gradient(120% 80% at 50% 0%,transparent 40%,rgba(14,7,32,.65) 100%);
-  /* glow / sombras */
-  --glow-primary:0 8px 32px rgba(255,61,154,.45); --glow-primary-sm:0 4px 16px rgba(255,61,154,.35);
-  --glow-violet:0 8px 32px rgba(139,92,246,.45); --glow-yes:0 6px 24px rgba(45,212,167,.45);
-  --glow-no:0 6px 24px rgba(255,77,109,.45); --glow-card:0 16px 48px rgba(0,0,0,.40);
-  --glow-poster:0 24px 80px rgba(255,61,154,.40); --ring-focus:0 0 0 3px rgba(255,61,154,.55);
+  --grad-text:linear-gradient(100deg,#C026D3 0%,#FF3D9A 50%,#FF6B5C 100%);
+  --grad-vignette:radial-gradient(120% 80% at 50% 0%,rgba(255,255,255,.45) 0%,transparent 55%);
+  /* glow / sombras (color difuso; card con morado suave, nunca negro puro) */
+  --glow-primary:0 8px 32px rgba(255,61,154,.42); --glow-primary-sm:0 4px 16px rgba(255,61,154,.32);
+  --glow-violet:0 8px 32px rgba(139,92,246,.40); --glow-yes:0 6px 24px rgba(45,212,167,.40);
+  --glow-no:0 6px 24px rgba(255,77,109,.40); --glow-card:0 16px 40px rgba(120,60,160,.18);
+  --glow-card-rest:0 8px 24px rgba(120,60,160,.12);
+  --glow-poster:0 24px 70px rgba(255,61,154,.42); --ring-focus:0 0 0 3px rgba(255,61,154,.50);
   /* radios / blur / capas */
   --r-sm:10px; --r-md:16px; --r-lg:24px; --r-xl:32px; --r-pill:9999px; --blur:16px;
   --z-bg:0; --z-content:10; --z-toast:100; --z-confetti:90;
@@ -873,6 +897,4 @@ Por defecto **CSS puro** (generar N spans absolutos con estilos inline aleatorio
   --font-display:'Fredoka',system-ui,sans-serif; --font-body:'Plus Jakarta Sans',system-ui,sans-serif;
   --ease-bounce:cubic-bezier(.34,1.56,.64,1); --ease-smooth:cubic-bezier(.4,0,.2,1);
 }
-```
-```
 ```

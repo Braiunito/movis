@@ -2,8 +2,15 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Brand from '../components/Brand.jsx';
 import Mascot from '../components/Mascot.jsx';
+import Icon from '../components/Icon.jsx';
 import { api } from '../lib/api.js';
 import { saveProfile, loadProfile } from '../lib/storage.js';
+
+const MODES = [
+  { key: 'solo', label: 'Yo solo', icon: 'user' },
+  { key: 'duo', label: 'En pareja', icon: 'duo' },
+  { key: 'group', label: 'En grupo', icon: 'users' },
+];
 
 export default function Landing() {
   const navigate = useNavigate();
@@ -26,51 +33,77 @@ export default function Landing() {
     }
   }
 
+  const ready = !!name.trim() && !!mode && !busy;
+
   return (
     <div className="shell">
       <Brand />
-      <div className="scene"><Mascot size={260} /></div>
+
+      <div className="scene">
+        <div className="glow-halo" />
+        <Mascot size={260} mood="happy" />
+      </div>
+
       <p className="subtitle">
-        Dejad de discutir qué ver.<br />
-        Encontrad la peli sin levantaros del sofá.
+        Encontrá la peli que les guste a todos. Sin pelear más por el control.
       </p>
 
-      <div className="card stack">
-        <label className="label">¿Cómo te llamas?</label>
-        <input
-          type="text"
-          placeholder="Tu nombre"
-          value={name}
-          onChange={e => setName(e.target.value)}
-          maxLength={30}
-        />
-
-        <label className="label">¿Cuántos sois?</label>
-        <div className="row">
-          {[
-            { key: 'solo', label: 'Yo solo' },
-            { key: 'duo', label: 'En pareja' },
-            { key: 'group', label: 'En grupo' },
-          ].map(m => (
-            <button
-              key={m.key}
-              className={mode === m.key ? '' : 'ghost'}
-              onClick={() => setMode(m.key)}
-              type="button"
-            >
-              {m.label}
-            </button>
-          ))}
+      <div className="card stack full">
+        <div className="field">
+          <label className="label" htmlFor="name">¿Cómo te llamás?</label>
+          <input
+            id="name"
+            type="text"
+            placeholder="Tu nombre"
+            value={name}
+            onChange={e => setName(e.target.value)}
+            maxLength={30}
+          />
         </div>
 
-        {error && <div className="error-banner">{error}</div>}
+        <div className="field">
+          <span className="label">¿Cuántos son?</span>
+          <div className="row start">
+            {MODES.map(m => {
+              const on = mode === m.key;
+              return (
+                <button
+                  key={m.key}
+                  type="button"
+                  className={`chip ${on ? 'yes' : ''}`}
+                  aria-pressed={on}
+                  onClick={() => setMode(m.key)}
+                >
+                  <Icon name={m.icon} size={18} />
+                  {m.label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {error && (
+          <div className="error-banner" role="alert">
+            <Icon name="alert" size={20} />
+            <span>{error}</span>
+          </div>
+        )}
 
         <button
-          disabled={!name.trim() || !mode || busy}
+          className={ready ? 'cta-attention' : ''}
+          disabled={!ready}
           onClick={go}
-          style={{ marginTop: 8 }}
+          style={{ marginTop: 4 }}
         >
-          {busy ? 'Creando...' : '¡Movis!'}
+          {busy ? (
+            <>
+              <span className="spinner" /> Creando…
+            </>
+          ) : (
+            <>
+              <Icon name="play" size={20} /> ¡Movis!
+            </>
+          )}
         </button>
       </div>
     </div>
