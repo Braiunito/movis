@@ -8,7 +8,7 @@ import Confetti from '../components/Confetti.jsx';
 import Wizard from './Wizard.jsx';
 import { api } from '../lib/api.js';
 import { getSocket } from '../lib/socket.js';
-import { loadProfile, saveProfile } from '../lib/storage.js';
+import { loadProfile, saveProfile, loadSession, saveSession, clearSession } from '../lib/storage.js';
 
 // fases: join -> wizard -> waiting -> result
 export default function Room() {
@@ -21,28 +21,67 @@ export default function Room() {
   const [error, setError] = useState('');
   const [toast, setToast] = useState('');
   const socketRef = useRef(null);
+  // refs estables para que los handlers de socket vean siempre el último valor
+  const phaseRef = useRef(phase);
+  const meRef = useRef(me);
+  useEffect(() => { phaseRef.current = phase; }, [phase]);
+  useEffect(() => { meRef.current = me; }, [me]);
+
+  // Intenta reconectar usando la sesión guardada.
+  // Llamada en mount y en cada socket 'connect' (reconexión).
+  function tryRejoin(socket) {
+    const savedPid = loadSession(id);
+    if (!savedPid) return;
+    socket.emit('room:rejoin', { roomId: id, participantId: savedPid }, res => {
+      if (res?.error) {
+        // sesión inválida (sala perdida tras reinicio del server, etc.)
+        clearSession(id);
+        return;
+      }
+      setMe(res.me);
+      setRoom(res.room);
+      if (res.suggestion) {
+        setSuggestion(res.suggestion);
+        setPhase('result');
+      } else if (phaseRef.current === 'join') {
+        // sólo movemos de pantalla si seguimos en el form de nombre
+        setPhase(res.phase || 'wizard');
+      }
+      setError('');
+    });
+  }
 
   useEffect(() => {
     const socket = getSocket();
     socketRef.current = socket;
 
-    socket.on('room:update', setRoom);
-    socket.on('room:all_ready', () => setPhase('waiting'));
-    socket.on('room:suggestion', m => {
-      setSuggestion(m);
-      setPhase('result');
-    });
-    socket.on('room:notice', ({ message }) => setToast(message));
-    socket.on('room:error', ({ message }) => setError(message));
+    const onUpdate = r => setRoom(r);
+    const onAllReady = () => setPhase('waiting');
+    const onSuggestion = m => { setSuggestion(m); setPhase('result'); };
+    const onNotice = ({ message }) => setToast(message);
+    const onErr = ({ message }) => setError(message);
+    const onConnect = () => tryRejoin(socket);
+
+    socket.on('room:update', onUpdate);
+    socket.on('room:all_ready', onAllReady);
+    socket.on('room:suggestion', onSuggestion);
+    socket.on('room:notice', onNotice);
+    socket.on('room:error', onErr);
+    socket.on('connect', onConnect);
+
+    // primer intento de rejoin si el socket ya está conectado al montar
+    if (socket.connected) tryRejoin(socket);
 
     return () => {
-      socket.off('room:update');
-      socket.off('room:all_ready');
-      socket.off('room:suggestion');
-      socket.off('room:notice');
-      socket.off('room:error');
+      socket.off('room:update', onUpdate);
+      socket.off('room:all_ready', onAllReady);
+      socket.off('room:suggestion', onSuggestion);
+      socket.off('room:notice', onNotice);
+      socket.off('room:error', onErr);
+      socket.off('connect', onConnect);
     };
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id]);
 
   // Pre-cargar estado de sala (por si está cerrada o no existe)
   useEffect(() => {
@@ -56,6 +95,7 @@ export default function Room() {
       if (res?.error) return setError(res.error);
       setMe(res.me);
       setRoom(res.room);
+      saveSession(id, res.me.id); // guardamos para futuros reconnects
       setPhase('wizard');
     });
   }
