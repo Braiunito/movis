@@ -21,7 +21,7 @@ services:
           condition: service_started
 
   client:
-    type: node:20
+    type: node:18
     command: npm run dev -- --host 0.0.0.0 --port 3000
     build:
       - cd /app/client && npm install && chmod -R +x node_modules/.bin
@@ -32,7 +32,7 @@ services:
         - movis_client_node_modules:/app/client/node_modules
 
   server:
-    type: node:20
+    type: node:18
     command: npm start
     build:
       - cd /app/server && npm install && chmod -R +x node_modules/.bin

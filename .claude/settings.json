@@ -1,0 +1,20 @@
+{
+  "hooks": {
+    "pre-tool-use": [
+      {
+        "matcher": "Bash",
+        "command": ".claude/hooks/block-dangerous-commands.sh"
+      }
+    ],
+    "post-tool-use": [
+      {
+        "matcher": "Write|Edit",
+        "command": ".claude/hooks/lint-php.sh"
+      },
+      {
+        "matcher": "Write",
+        "command": ".claude/hooks/manifest-reminder.sh"
+      }
+    ]
+  }
+}
